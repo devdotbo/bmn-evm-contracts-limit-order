@@ -161,9 +161,11 @@ forge test --gas-report
 
 ### Test Documentation
 
-For detailed information about the test suite:
-- **TEST-PLAN.md**: Comprehensive test implementation guide and specifications
-- **TEST_STRATEGY.md**: Testing philosophy and strategic approach
+For detailed information about the test suite, see **TEST.md** for comprehensive testing documentation including:
+- Test implementation guide and specifications
+- Testing philosophy and strategic approach
+- Gas reports and performance metrics
+- Architecture details and helper functions
 
 ### Key Test Scenarios
 
