@@ -19,11 +19,7 @@ contract DeployLocal is Script {
         );
         
         console.log("[DEPLOYED] SimpleLimitOrderProtocol:", address(protocol));
-        
-        // Save deployment info
-        string memory json = "deployment";
-        vm.serializeAddress(json, "limitOrderProtocol", address(protocol));
-        vm.writeJson(json, "deployments/local.json");
+        console.log("Deployment successful at:", address(protocol));
         
         vm.stopBroadcast();
     }
