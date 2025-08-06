@@ -7,6 +7,7 @@ allow_paths = ["../solidity-utils"]
 evm_version = "paris"
 optimizer = true
 optimizer_runs = 1000000
+via_ir = true
 remappings = [
     "forge-std-1.10.0/=dependencies/forge-std-1.10.0/",
     "forge-std/=dependencies/forge-std-1.10.0/src/",
