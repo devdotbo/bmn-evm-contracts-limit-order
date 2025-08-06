@@ -18,14 +18,27 @@ forge soldeer update
 
 ### Testing
 ```bash
-# Run all tests
+# Run all tests (currently 13 passing tests)
 forge test
 
 # Run tests with verbosity for debugging
 forge test -vvv
 
-# Run specific test
+# Run specific test file
+forge test --match-path test/SimpleLimitOrderProtocol.t.sol
+
+# Run specific test by name
 forge test --match-test testOrderFilling
+
+# Run tests with gas reporting
+forge test --gas-report
+
+# Run tests with coverage
+forge coverage
+
+# Troubleshooting stack too deep errors
+# Enable via-ir compilation if encountering stack issues
+forge test --via-ir
 ```
 
 ### Deployment
@@ -132,5 +145,97 @@ Required environment variables (sourced from `../.env`):
 - Solidity version: 0.8.23
 - EVM version: Paris
 - Optimizer: Enabled with 1,000,000 runs
+- IR compilation: Enabled (--via-ir) to resolve stack too deep errors
 - Dependency management: Soldeer (dependencies stored in `dependencies/` directory)
 - Remappings configured in `foundry.toml`
+
+## Implementation Notes
+
+### MakerTraits Bit Layout
+The MakerTraits uint256 packs multiple order parameters using specific bit positions:
+- **Bits 0-79**: Reserved for other flags and parameters
+- **Bits 80-119**: Expiration timestamp (40 bits) - NOT bits 120-159 as might be expected
+- **Bits 120-255**: Additional parameters including nonce suffix
+
+Example of setting expiration:
+```solidity
+uint256 makerTraits = uint256(expiration) << 80;
+```
+
+### Address Type Handling
+The codebase uses the 1inch AddressLib pattern with wrapped Address types:
+```solidity
+import {Address, AddressLib} from "../solidity-utils/contracts/libraries/AddressLib.sol";
+
+// Wrapping native address to Address type
+Address wrappedAddr = Address.wrap(someAddress);
+
+// Using AddressLib for conversions
+address nativeAddr = AddressLib.get(wrappedAddr);
+```
+
+### Test Architecture Patterns
+
+#### Mock Contracts
+Tests use mock implementations for external dependencies:
+- `MockERC20`: Simple ERC20 token for testing
+- `MockFactory`: Simulates CrossChainEscrowFactory behavior
+- `MockResolver`: Simulates resolver interactions
+
+#### Test Setup Structure
+```solidity
+function setUp() public {
+    // 1. Deploy protocol contract
+    protocol = new SimpleLimitOrderProtocol(WETH);
+    
+    // 2. Deploy mock tokens
+    srcToken = new MockERC20("Source", "SRC");
+    dstToken = new MockERC20("Dest", "DST");
+    
+    // 3. Set up test accounts (alice = maker, bob = taker)
+    // 4. Fund accounts with tokens
+    // 5. Set unlimited approvals
+}
+```
+
+#### Order Creation Pattern
+Orders require careful construction with proper encoding:
+```solidity
+IOrderMixin.Order memory order = IOrderMixin.Order({
+    salt: uint256(keccak256("unique-salt")),
+    maker: Address.wrap(alice),
+    receiver: Address.wrap(address(0)), // defaults to taker
+    makerAsset: Address.wrap(address(srcToken)),
+    takerAsset: Address.wrap(address(dstToken)),
+    makingAmount: 1000 * 1e18,
+    takingAmount: 500 * 1e18,
+    makerTraits: makerTraits
+});
+```
+
+### Common Troubleshooting
+
+#### Stack Too Deep Errors
+If encountering "Stack too deep" errors during compilation:
+1. Enable IR compilation in foundry.toml: `viaIR = true`
+2. Or use command line flag: `forge build --via-ir`
+3. Consider refactoring complex functions into smaller helpers
+
+#### Test Execution Tips
+- Use `--match-path` for running specific test files
+- Use `--match-test` with regex patterns for test filtering
+- Add `-vvvv` for maximum verbosity when debugging failures
+- Check gas usage with `--gas-report` to identify optimization opportunities
+
+#### Extension Data Encoding
+When testing with factory extensions, ensure proper ABI encoding:
+```solidity
+bytes memory extension = abi.encode(
+    factory,
+    destinationChainId,
+    destinationToken,
+    destinationReceiver,
+    timelocks,
+    hashlock
+);
+```
