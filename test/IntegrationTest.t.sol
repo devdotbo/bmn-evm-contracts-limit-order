@@ -134,10 +134,9 @@ contract IntegrationTest is Test {
         // Initial state check
         assertFalse(factory.postInteractionCalled(), "Factory should not be called yet");
 
-        // Fill order as Bob (resolver) with extension data
-        bytes memory extensionData = abi.encode(address(factory));
+        // Fill order as Bob (resolver)
         vm.prank(bob);
-        protocol.fillOrder(order, r, vs, makingAmount, TakerTraits.wrap(0), extensionData);
+        protocol.fillOrder(order, r, vs, makingAmount, TakerTraits.wrap(0));
 
         // Verify postInteraction was called
         assertTrue(factory.postInteractionCalled(), "Factory postInteraction should be called");

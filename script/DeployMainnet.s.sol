@@ -67,7 +67,7 @@ contract DeployMainnet is Script {
             chainName = "Unknown";
         }
         
-        console.log("Deploying to:", chainName, "(Chain ID:", chainId, ")");
+        console.log(string.concat("Deploying to: ", chainName, " (Chain ID: ", vm.toString(chainId), ")"));
         console.log("");
         console.log("Configuration:");
         console.log("- WETH:", WETH);
@@ -87,7 +87,7 @@ contract DeployMainnet is Script {
         console.log("Deploying SimpleLimitOrderProtocol...");
         
         // Deploy via CREATE3
-        address deployed = CREATE3_FACTORY.deploy(SALT, bytecode);
+        address payable deployed = payable(CREATE3_FACTORY.deploy(SALT, bytecode));
         
         console.log("");
         console.log("========================================");

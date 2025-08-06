@@ -44,7 +44,7 @@ contract DeployTestnet is Script {
         console.log("Network:", chainName);
         
         // Get predicted address
-        address predicted = CREATE3_FACTORY.getDeployed(deployer, SALT);
+        address payable predicted = payable(CREATE3_FACTORY.getDeployed(deployer, SALT));
         console.log("Predicted address:", predicted);
         
         // Check if already deployed
