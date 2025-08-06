@@ -17,6 +17,13 @@ forge soldeer update
 ```
 
 ### Testing
+
+For comprehensive test documentation, see **TEST.md** which includes:
+- All test execution commands and coverage areas
+- Gas reports and performance metrics  
+- Architecture details (MakerTraits, bit flags, etc.)
+- Helper functions and mock contracts
+
 ```bash
 # Run all tests (currently 13 passing tests)
 forge test
