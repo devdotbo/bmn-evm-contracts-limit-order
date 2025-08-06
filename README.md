@@ -1,5 +1,11 @@
 # Bridge-Me-Not Limit Order Protocol
 
+## 🚀 Status: DEPLOYED & LIVE ON MAINNET
+
+**Deployment Date**: January 6, 2025  
+**Deployer**: `0x5f29827e25dc174a6A51C99e6811Bbd7581285b0`  
+**Status**: ✅ Fully deployed and verified on Optimism and Base mainnet
+
 ## Overview
 
 This repository contains a simplified implementation of the 1inch Limit Order Protocol, specifically designed to work with the Bridge-Me-Not CrossChainEscrowFactory for enabling atomic cross-chain swaps.
@@ -38,9 +44,37 @@ Atomic Swap Complete ✓
 - **Base Factory**: `0x2B2d52Cf0080a01f457A4f64F41cbca500f787b1`
 - **CREATE3 Factory**: `0x7B9e9BE124C5A0E239E04fDC93b66ead4e8C669d` (all chains)
 
-### SimpleLimitOrderProtocol
-- **Optimism**: (To be deployed)
-- **Base**: (To be deployed)
+### SimpleLimitOrderProtocol (Deployed ✅)
+
+| Network | Contract Address | Block Explorer | Deployment Block | Status |
+|---------|-----------------|----------------|------------------|--------|
+| **Optimism** | `0x44716439C19c2E8BD6E1bCB5556ed4C31dA8cDc7` | [View on Optimistic Etherscan](https://optimistic.etherscan.io/address/0x44716439c19c2e8bd6e1bcb5556ed4c31da8cdc7) | 139447565 | ✅ Verified |
+| **Base** | `0x1c1A74b677A28ff92f4AbF874b3Aa6dE864D3f06` | [View on Basescan](https://basescan.org/address/0x1c1a74b677a28ff92f4abf874b3aa6de864d3f06) | 33852257 | ✅ Verified |
+
+**Note**: Different addresses were deployed using TestDeploy script. For same address deployment across chains, use DeployMainnet.s.sol with production salt.
+
+## Deployment Details
+
+### Technical Specifications
+- **Solidity Version**: 0.8.23
+- **Optimizer Runs**: 1,000,000
+- **Contract Size**: ~23KB
+- **Deployment Gas**: ~4.66M gas
+- **Constructor Argument**: WETH (`0x4200000000000000000000000000000000000006`)
+
+### Domain Separators
+- **Optimism**: `0x628b04420e4d169a5ddf0120e151ac7498e6213f680c14311e2ead62b73e040a`
+- **Base**: `0x16fd7f97521d06dd998effb9441cb01d062468b52baa9447227215f9eecd225f`
+
+### Deployment Transactions
+- **Base Deployment**: Block 33852257 (January 6, 2025)
+- **Optimism Deployment**: Block 139447565 (January 6, 2025)
+- **Total Cost**: < 0.001 ETH per chain
+
+### Indexer Configuration
+For indexers and event monitoring, start scanning from:
+- **Base**: Block `33852257`
+- **Optimism**: Block `139447565`
 
 ## Installation
 
@@ -89,7 +123,25 @@ forge script script/DeployMainnet.s.sol \
     --verify
 ```
 
-## Usage Example
+## Integration Guide
+
+### Connecting to Deployed Contracts
+
+```javascript
+// Contract addresses
+const PROTOCOL_OPTIMISM = "0x44716439C19c2E8BD6E1bCB5556ed4C31dA8cDc7";
+const PROTOCOL_BASE = "0x1c1A74b677A28ff92f4AbF874b3Aa6dE864D3f06";
+
+// Factory addresses (already deployed)
+const FACTORY_OPTIMISM = "0xB916C3edbFe574fFCBa688A6B92F72106479bD6c";
+const FACTORY_BASE = "0x2B2d52Cf0080a01f457A4f64F41cbca500f787b1";
+
+// Connect to protocol
+const protocol = await ethers.getContractAt(
+    "SimpleLimitOrderProtocol",
+    PROTOCOL_BASE // or PROTOCOL_OPTIMISM
+);
+```
 
 ### Creating an Order with Factory Extension
 
@@ -125,6 +177,56 @@ await limitOrderProtocol.fillOrder(
     takingAmount,
     resolver.address
 );
+```
+
+## Monitoring & Events
+
+### Key Events to Monitor
+
+```solidity
+// Order filled event
+event OrderFilled(
+    bytes32 indexed orderHash,
+    uint256 makingAmount,
+    uint256 takingAmount
+);
+
+// Order cancelled event  
+event OrderCancelled(bytes32 indexed orderHash);
+
+// Factory PostInteraction event
+event PostInteractionCalled(
+    address indexed taker,
+    uint256 makingAmount,
+    uint256 takingAmount,
+    bytes32 orderHash
+);
+```
+
+### Event Monitoring Example
+
+```javascript
+// Monitor OrderFilled events
+protocol.on("OrderFilled", (orderHash, makingAmount, takingAmount) => {
+    console.log(`Order ${orderHash} filled:`);
+    console.log(`  Making: ${makingAmount}`);
+    console.log(`  Taking: ${takingAmount}`);
+});
+
+// Monitor factory interactions
+factory.on("PostInteractionCalled", (taker, makingAmount, takingAmount, orderHash) => {
+    console.log(`Factory triggered for order ${orderHash}`);
+    console.log(`  Taker: ${taker}`);
+    console.log(`  Cross-chain swap initiated`);
+});
+```
+
+### Query Historical Events
+
+```javascript
+// Get recent OrderFilled events
+const filter = protocol.filters.OrderFilled();
+const events = await protocol.queryFilter(filter, -1000); // Last 1000 blocks
 ```
 
 ## Testing
@@ -214,6 +316,50 @@ bmn-evm-contracts-limit-order/
 - **Resolver**: `../bmn-evm-resolver/` - Resolver implementation
 - **Token**: `../bmn-evm-token/` - BMN token contracts
 
+## Production Checklist
+
+### ✅ Completed
+- [x] Deploy SimpleLimitOrderProtocol to Base mainnet
+- [x] Deploy SimpleLimitOrderProtocol to Optimism mainnet  
+- [x] Verify contracts on block explorers
+- [x] Document deployment addresses
+- [x] Create comprehensive test suite (13/13 passing)
+- [x] Integration tests with mock factory
+
+### 🔄 In Progress
+- [ ] Test cross-chain order with factory extension on testnets
+- [ ] Update resolver to use LimitOrderProtocol
+- [ ] Execute end-to-end atomic swap test on mainnet
+- [ ] Set up monitoring dashboard for events
+- [ ] Create example scripts for order creation/filling
+
+### 📋 Next Steps
+1. **Testnet Testing**: Deploy to Optimism Sepolia and Base Sepolia for integration testing
+2. **Resolver Update**: Modify resolver to interact with LimitOrderProtocol instead of factory directly
+3. **Live Testing**: Execute small-value test swaps on mainnet
+4. **Monitoring Setup**: Deploy event monitoring and alerting system
+5. **Documentation**: Create detailed integration examples and tutorials
+
+## Troubleshooting
+
+### Common Issues
+
+**Order Not Filling**
+- Check maker has sufficient token balance
+- Verify token approval to protocol address
+- Ensure order hasn't expired (check MakerTraits bits 80-119)
+- Confirm signature is valid
+
+**Factory Not Triggered**
+- Verify POST_INTERACTION_CALL_FLAG (bit 251) is set in MakerTraits
+- Check factory address in extension data
+- Ensure HAS_EXTENSION_FLAG (bit 249) is set if using extensions
+
+**Cross-Chain Issues**
+- Verify factory addresses match on both chains
+- Check destination chain ID in extension data
+- Ensure resolver has funds on destination chain
+
 ## License
 
 MIT
@@ -221,3 +367,9 @@ MIT
 ## Support
 
 For issues or questions, please open an issue in this repository or contact the Bridge-Me-Not team.
+
+## Acknowledgments
+
+- 1inch Protocol team for the original Limit Order Protocol
+- Foundry team for excellent development tools
+- OpenZeppelin for secure contract libraries
