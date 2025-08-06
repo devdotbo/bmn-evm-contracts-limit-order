@@ -3,6 +3,7 @@ src = "src"
 out = "out"
 libs = ["dependencies", "lib"]
 solc = "0.8.23"
+allow_paths = ["../solidity-utils"]
 evm_version = "paris"
 optimizer = true
 optimizer_runs = 1000000
@@ -10,7 +11,7 @@ remappings = [
     "forge-std-1.10.0/=dependencies/forge-std-1.10.0/",
     "forge-std/=dependencies/forge-std-1.10.0/src/",
     "@1inch/solidity-utils/=../solidity-utils/contracts/",
-    "@openzeppelin/contracts/=dependencies/@openzeppelin-contracts-5.1.0/contracts/"
+    "@openzeppelin/contracts/=dependencies/@openzeppelin-contracts-5.1.0/"
 ]
 
 [soldeer]

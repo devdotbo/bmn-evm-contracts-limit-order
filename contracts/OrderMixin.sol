@@ -7,10 +7,10 @@ import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
-import "@1inch/solidity-utils/contracts/interfaces/IWETH.sol";
-import "@1inch/solidity-utils/contracts/libraries/SafeERC20.sol";
-import "@1inch/solidity-utils/contracts/mixins/OnlyWethReceiver.sol";
-import "@1inch/solidity-utils/contracts/mixins/PermitAndCall.sol";
+import "@1inch/solidity-utils/interfaces/IWETH.sol";
+import "@1inch/solidity-utils/libraries/SafeERC20.sol";
+import "@1inch/solidity-utils/mixins/OnlyWethReceiver.sol";
+import "@1inch/solidity-utils/mixins/PermitAndCall.sol";
 
 import "./helpers/PredicateHelper.sol";
 import "./helpers/SeriesEpochManager.sol";

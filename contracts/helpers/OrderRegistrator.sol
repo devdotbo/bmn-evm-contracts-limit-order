@@ -2,8 +2,8 @@
 
 pragma solidity 0.8.23;
 
-import { Address, AddressLib } from "@1inch/solidity-utils/contracts/libraries/AddressLib.sol";
-import { ECDSA } from "@1inch/solidity-utils/contracts/libraries/ECDSA.sol";
+import { Address, AddressLib } from "@1inch/solidity-utils/libraries/AddressLib.sol";
+import { ECDSA } from "@1inch/solidity-utils/libraries/ECDSA.sol";
 import { IOrderMixin } from "../interfaces/IOrderMixin.sol";
 import { IOrderRegistrator } from "../interfaces/IOrderRegistrator.sol";
 import { OrderLib } from "../OrderLib.sol";
