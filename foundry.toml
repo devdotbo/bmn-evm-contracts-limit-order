@@ -6,10 +6,15 @@ solc = "0.8.23"
 evm_version = "paris"
 optimizer = true
 optimizer_runs = 1000000
-remappings = ["forge-std-1.10.0/=dependencies/forge-std-1.10.0/"]
+remappings = [
+    "forge-std-1.10.0/=dependencies/forge-std-1.10.0/",
+    "forge-std/=dependencies/forge-std-1.10.0/src/",
+    "@1inch/solidity-utils/=../solidity-utils/contracts/",
+    "@openzeppelin/contracts/=dependencies/@openzeppelin-contracts-5.1.0/contracts/"
+]
 
 [soldeer]
-remappings_generate = true
+remappings_generate = false
 remappings_regenerate = false
 remappings_version = true
 remappings_prefix = ""
@@ -19,6 +24,5 @@ recursive_deps = false
 [dependencies]
 forge-std = "1.10.0"
 "@openzeppelin-contracts" = "5.1.0"
-"@1inch-solidity-utils" = "5.0.0"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

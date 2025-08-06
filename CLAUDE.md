@@ -11,6 +11,9 @@ forge build
 
 # Install dependencies with Soldeer
 forge soldeer install
+
+# Update Soldeer dependencies and regenerate lock file
+forge soldeer update
 ```
 
 ### Testing
@@ -105,9 +108,10 @@ Orders must include factory extension data to trigger cross-chain escrow creatio
 ## Dependencies
 
 - **Foundry/Forge**: Development framework
-- **Soldeer**: Dependency management (replaces git submodules)
-- **OpenZeppelin v5.1.0**: Standard contract libraries
-- **1inch Solidity Utils v5.0.0**: Core order utilities
+- **Soldeer**: Dependency management for external libraries
+- **forge-std v1.10.0**: Foundry standard library (installed via Soldeer)
+- **OpenZeppelin v5.1.0**: Standard contract libraries (installed via Soldeer)
+- **1inch Solidity Utils**: Core order utilities (referenced locally from ../solidity-utils)
 
 ## Related Repositories
 
@@ -128,3 +132,5 @@ Required environment variables (sourced from `../.env`):
 - Solidity version: 0.8.23
 - EVM version: Paris
 - Optimizer: Enabled with 1,000,000 runs
+- Dependency management: Soldeer (dependencies stored in `dependencies/` directory)
+- Remappings configured in `foundry.toml`

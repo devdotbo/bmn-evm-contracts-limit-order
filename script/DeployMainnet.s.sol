@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
 
-import "forge-std-1.10.0/Script.sol";
+import "forge-std/Script.sol";
 import "../contracts/SimpleLimitOrderProtocol.sol";
 
 interface ICREATE3Factory {
