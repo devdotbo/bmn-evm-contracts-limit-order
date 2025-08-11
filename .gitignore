@@ -30,3 +30,9 @@ coverage/
 
 # Deployment info
 deployments/
+.env.mainnet
+broadcast/DeployLocal.s.sol/8453/run-1754495445.json
+broadcast/DeployLocal.s.sol/8453/run-1754495457.json
+broadcast/DeployLocal.s.sol/8453/run-latest.json
+logs/host-resolver.log
+script/DeployLocalComplete.s.sol.bk
